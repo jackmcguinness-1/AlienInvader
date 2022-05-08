@@ -1,5 +1,6 @@
 import Entity from "./Entity.js";
 import Player from "./Player.js";
+import Alien from "./Alien.js";
 import Bullet from "./Bullet.js";
 
 export default class EntityHandler{
@@ -12,6 +13,13 @@ export default class EntityHandler{
 
         let player = new Player();
         EntityHandler.Entities.push(player);
+
+        EntityHandler.SetupEnemies();
+    }
+
+    public static SetupEnemies(){
+        let enemy = new Alien(0, 0, 0);
+        EntityHandler.Entities.push(enemy);
     }
 
     public static SpawnBullet(x: number, y: number, direction: number){

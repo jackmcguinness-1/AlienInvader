@@ -6,7 +6,7 @@ import EntityHandler from "./EntityHandler.js";
 export default class Player extends Entity{
     width: number = 50;
     height: number = 50;
-    speed: number = 50;
+    speed: number = 500;
     lastShot: number = 999;
     shootSpeed: number = 0.1;
 
@@ -51,7 +51,8 @@ export default class Player extends Entity{
             this.x -= vel;
         }
         if(InputHandler.RightButtonState && this.x < (CanvasHandler.canvasWidth - this.width)){
-            let vel = this.x > (CanvasHandler.canvasWidth - this.speed) ? (CanvasHandler.canvasWidth - this.x) : this.speed;
+            let endPos = CanvasHandler.canvasWidth - this.width;
+            let vel = this.x > (endPos - this.speed) ? (endPos - this.x) : this.speed;
             this.x += vel;
         }
         if(InputHandler.BasicAttackState && this.canShoot() ){
