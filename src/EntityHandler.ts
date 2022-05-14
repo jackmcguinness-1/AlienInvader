@@ -1,4 +1,5 @@
 import Entity from "./Entity.js";
+import Wall from "./Wall.js";
 import Player from "./Player.js";
 import Alien from "./Alien.js";
 import Bullet from "./Bullet.js";
@@ -11,10 +12,26 @@ export default class EntityHandler{
         EntityHandler.Entities = [];
         EntityHandler.Bullets = [];
 
-        let player = new Player();
-        EntityHandler.Entities.push(player);
+        EntityHandler.SetupPlayer();
+
+        EntityHandler.SetupWalls();
 
         EntityHandler.SetupEnemies();
+    }
+
+    public static SetupPlayer(){
+        let player = new Player();
+        EntityHandler.Entities.push(player);
+    }
+
+    public static SetupWalls(){
+        let wall1 = new Wall(100, 300);
+        let wall2 = new Wall(360, 300);
+        let wall3 = new Wall(600, 300);
+
+        EntityHandler.Entities.push(wall1);
+        EntityHandler.Entities.push(wall2);
+        EntityHandler.Entities.push(wall3);
     }
 
     public static SetupEnemies(){

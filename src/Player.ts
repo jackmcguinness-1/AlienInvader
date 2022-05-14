@@ -2,19 +2,27 @@ import Entity from "./Entity.js";
 import CanvasHandler from "./CanvasHandler.js";
 import InputHandler from "./InputHandler.js";
 import EntityHandler from "./EntityHandler.js";
-
+import Rect from "./Shape/Rect.js";
 export default class Player extends Entity{
-    width: number = 50;
-    height: number = 50;
-    speed: number = 500;
+    public static Y_OFFSET: number = 20;
+    public static WIDTH: number = 50;
+    public static HEIGHT: number = 50;
+    public static SPEED: number = 10;
+    public static SHOOTSPEED: number = 0.1;
+    public static COLOUR = "#ff00ff";
+
     lastShot: number = 999;
-    shootSpeed: number = 0.1;
+    x: number;
+    y: number;
+    shape: Rect;
 
     public constructor(){
         super();
-
-        this.x = (CanvasHandler.canvasWidth - this.width) / 2;
-        this.y = (CanvasHandler.canvasHeight - this.height) - 20;
+        this.x = (CanvasHandler.canvasWidth - Player.WIDTH) / 2;
+        this.y = (CanvasHandler.canvasHeight - Player.HEIGHT) - Player.Y_OFFSET;
+        this.shape = new Rect(this.x, this.y, Player.WIDTH, Player.HEIGHT);
+        this.colour = Player.COLOUR;
+        this.isDrawn = false;
     }
 
     private setPos(x: number, y: number){
@@ -22,44 +30,38 @@ export default class Player extends Entity{
         this.y = y;
     }
 
-    public override draw(){
-        this.context.fillStyle = "white";
-        this.context.fillRect(this.x, this.y, this.width, this.height);
-        this.context.fillStyle = "blue";
-        this.context.fillRect(this.x + 5, this.y + 5, this.width - 10, this.height - 10);
-    }
-
-    public override clear(){
-        this.context.fillStyle = CanvasHandler.backgroundColor;
-        this.context.fillRect(this.x, this.y, this.width, this.height);
-    }
-
     public shoot(){
-        const midPoint = (this.x + this.width / 2);
+        const midPoint = (this.x + Player.WIDTH / 2);
         EntityHandler.SpawnBullet(midPoint, this.y, -1);
     }
 
     public canShoot(){
-        return (this.lastShot > 1/this.shootSpeed);
+        return (this.lastShot > 1/Player.SHOOTSPEED);
     }
 
-    public override update(){
+    public updateNeeded(): boolean {
+        return InputHandler.LeftButtonState || InputHandler.RightButtonState || InputHandler.BasicAttackState;
+    }
+
+    public update(){
+        super.update();
+
         this.lastShot += 1;
 
         if(InputHandler.LeftButtonState && this.x > 0){
-            let vel = this.x < this.speed ? this.x : this.speed;
+            let vel = this.x < Player.SPEED ? this.x : Player.SPEED;
             this.x -= vel;
         }
-        if(InputHandler.RightButtonState && this.x < (CanvasHandler.canvasWidth - this.width)){
-            let endPos = CanvasHandler.canvasWidth - this.width;
-            let vel = this.x > (endPos - this.speed) ? (endPos - this.x) : this.speed;
+        if(InputHandler.RightButtonState && this.x < (CanvasHandler.canvasWidth - Player.WIDTH)){
+            let endPos = CanvasHandler.canvasWidth - Player.WIDTH;
+            let vel = this.x > (endPos - Player.SPEED) ? (endPos - this.x) : Player.SPEED;
             this.x += vel;
         }
         if(InputHandler.BasicAttackState && this.canShoot() ){
             this.shoot();
             this.lastShot = 0;
         }
+
+        this.shape.xMin = this.x;
     }
-
-
 }
