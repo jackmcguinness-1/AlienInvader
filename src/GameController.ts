@@ -8,7 +8,7 @@ export default class GameController{
         EntityHandler.Entities.filter( entity => entity.updateNeeded() ).forEach( entity => entity.clear() );
     }
     update(){
-        EntityHandler.Entities.forEach( entity => entity.update() );
+        EntityHandler.Entities.filter( entity => entity.updateNeeded() ).forEach( entity => entity.update() );
     }
     
     draw(){
